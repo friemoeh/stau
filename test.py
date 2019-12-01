@@ -1,4 +1,5 @@
 from random import randrange
+from Car import Car
 
 def bremsen(v, delta):
   if v<delta:
@@ -34,3 +35,15 @@ for t in range(11):
     l = t*v
     print("car %d drove %d meters after %d seconds with the speed %d" % (car, l, t, v))
 
+
+
+car1 = Car("Porsche Cayman S",15, 250)
+
+car1.acc(355)
+
+
+print(car1)
+
+car1.brake(300)
+
+print(car1)

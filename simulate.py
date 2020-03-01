@@ -3,20 +3,63 @@ import pygame
 import math
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
+from random import random
+
+def userReact(car, dt): 
+    pressed = pygame.key.get_pressed()
+
+    if pressed[pygame.K_UP]:
+        if car.velocity < 0:
+            car.acceleration = car.brake_deceleration
+        else:
+            car.acceleration += 1 * dt
+    elif pressed[pygame.K_DOWN]:
+        if car.velocity > 0:
+            car.acceleration = -car.brake_deceleration
+        else:
+            car.acceleration -= 1 * dt
+    elif pressed[pygame.K_SPACE]:
+        if abs(car.velocity) > dt * car.brake_deceleration:
+            car.acceleration = -copysign(car.brake_deceleration, car.velocity)
+        else:
+            car.acceleration = -car.velocity / dt
+    else:
+        if abs(car.velocity) > dt * car.free_deceleration:
+            car.acceleration = -copysign(car.free_deceleration, car.velocity)
+        else:
+            if dt != 0:
+                car.acceleration = -car.velocity / dt
+                car.acceleration = max(-car.max_acceleration,
+                    min(car.acceleration, car.max_acceleration))
+
+def react(car, dt):
+    v = random()
+
+    if(v>car.randomization):
+        car.acceleration=car.default_acc
+    else:
+        car.acceleration=0
+        print("tritratrödel")
+
+
+    
+    
+
 
 
 class Car:
-    def __init__(self, x, lap, max_acceleration=5.0):
+    def __init__(self, x, lap, startvelocity=0, randomization=0.5):
         self.position = x
         self.lap = lap
-        self.velocity = 0.0
-        self.max_acceleration = max_acceleration
+        self.default_acc=1
+        self.velocity = startvelocity
+        self.randomization=randomization
+        self.max_acceleration = 5.0
         self.max_velocity = 20
         self.brake_deceleration = 10
         self.free_deceleration = 2
         
-        self.acceleration = 0.0
-        self.steering = 0.0
+        self.acceleration = self.default_acc
 
     def update(self, dt):
         self.velocity += self.acceleration * dt
@@ -45,7 +88,7 @@ class Game:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
-        car = Car (0, self.lap)
+        car1 = Car (0, self.lap, 5)
       #  car = Car (0)
         ppu = 32
 
@@ -58,46 +101,16 @@ class Game:
                     self.exit = True
 
             # User input
-            pressed = pygame.key.get_pressed()
-
-            if pressed[pygame.K_UP]:
-                if car.velocity < 0:
-                    car.acceleration = car.brake_deceleration
-                else:
-                    car.acceleration += 1 * dt
-            elif pressed[pygame.K_DOWN]:
-                if car.velocity > 0:
-                    car.acceleration = -car.brake_deceleration
-                else:
-                    car.acceleration -= 1 * dt
-            elif pressed[pygame.K_SPACE]:
-                if abs(car.velocity) > dt * car.brake_deceleration:
-                    car.acceleration = -copysign(car.brake_deceleration, car.velocity)
-                else:
-                    car.acceleration = -car.velocity / dt
-            else:
-                if abs(car.velocity) > dt * car.free_deceleration:
-                    car.acceleration = -copysign(car.free_deceleration, car.velocity)
-                else:
-                    if dt != 0:
-                        car.acceleration = -car.velocity / dt
-            car.acceleration = max(-car.max_acceleration, min(car.acceleration, car.max_acceleration))
-
-    
-
+            #userReact(car, dt)
+            react(car1, dt)
+            print(car1.velocity)
             # Logic
-            car.update(dt)
+            car1.update(dt)
 
             # Drawing
-
-
-            pos = car.position
-
-
+            pos = car1.position
 
             alpha = pos * 2 * math.pi / self.lap
-
-            print(alpha)
 
             x = math.sin(alpha) * self.radius
             y = math.cos(alpha) * self.radius
@@ -120,7 +133,7 @@ class Game:
         pygame.quit()
 
 
-
+  
 if __name__ == '__main__':
     game = Game()
     game.run()

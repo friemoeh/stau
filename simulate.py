@@ -42,11 +42,6 @@ def react(car, dt):
         print("tritratrödel")
 
 
-    
-    
-
-
-
 class Car:
     def __init__(self, x, lap, startvelocity=0, randomization=0.5):
         self.position = x
@@ -69,8 +64,6 @@ class Car:
         if self.position > self.lap:
             self.position = self.position - self.lap
         
-       
-
 class Game:
     def __init__(self):
         pygame.init()
@@ -84,13 +77,39 @@ class Game:
         self.exit = False
         self.lap = 2 * math.pi * self.radius
 
+    def cleancars(self):
+        self.screen.fill((0, 0, 0))
+
+    def paintcar(self, car, car_image):
+        ppu = 32
+        pos = car.position
+
+        alpha = pos * 2 * math.pi / self.lap
+
+        x = math.sin(alpha) * self.radius
+        y = math.cos(alpha) * self.radius
+
+        x = x + 12
+        y = y + 12
+
+        alpha_deg = alpha * 360 / (2 * math.pi)
+
+       
+        rotated = pygame.transform.rotate(car_image, alpha_deg)
+        rect = rotated.get_rect()
+
+        screenPosition = Vector2(x,y)
+        self.screen.blit(rotated, screenPosition * ppu - (rect.width / 2, rect.height / 2))
+    
+
     def run(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
-        car1 = Car (0, self.lap, 5)
+        car1 = Car (0.5 * self.lap, self.lap, 5)
+        car2 = Car (0, self.lap, 5)
       #  car = Car (0)
-        ppu = 32
+       
 
         while not self.exit:
             dt = self.clock.get_time() / 1000
@@ -104,31 +123,20 @@ class Game:
             #userReact(car, dt)
             react(car1, dt)
             print(car1.velocity)
+
+            react(car2, dt)
+            print(car2.velocity)
             # Logic
             car1.update(dt)
+            car2.update(dt)
 
             # Drawing
-            pos = car1.position
+            self.cleancars()
+            self.paintcar(car1, car_image)
+            self.paintcar(car2, car_image)
 
-            alpha = pos * 2 * math.pi / self.lap
-
-            x = math.sin(alpha) * self.radius
-            y = math.cos(alpha) * self.radius
-
-            x = x + 12
-            y = y + 12
-
-            alpha_deg = alpha * 360 / (2 * math.pi)
-
-            self.screen.fill((0, 0, 0))
-            rotated = pygame.transform.rotate(car_image, alpha_deg)
-            rect = rotated.get_rect()
-
-            screenPosition = Vector2(x,y)
-            self.screen.blit(rotated, screenPosition * ppu - (rect.width / 2, rect.height / 2))
             pygame.display.flip()
         
-
             self.clock.tick(self.ticks)
         pygame.quit()
 

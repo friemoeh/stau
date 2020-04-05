@@ -21,7 +21,7 @@ class Game:
         self.ticks = 60
         self.exit = False
         self.lap = 2 * math.pi * self.radius
-        self.numberCars = 10
+        self.numberCars = 6
 
     def cleancars(self):
         self.screen.fill((0, 0, 0))

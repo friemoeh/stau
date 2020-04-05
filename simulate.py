@@ -3,16 +3,10 @@ import pygame
 import math
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
-from random import random
+
 from Car import Car
 
-def react(car, dt):
-    v = random()
 
-    if(v>car.randomization):
-        car.accelerate(car.default_acc)
-    else:
-        car.accelerate(0)
         
    
 class Game:
@@ -64,7 +58,6 @@ class Game:
             car = Car (start, self.lap, 5)
             garage.append(car)
     
-       
 
         while not self.exit:
             dt = self.clock.get_time() / 1000
@@ -77,7 +70,7 @@ class Game:
             self.cleancars()
 
             for car in garage:
-                react(car, dt)
+                car.react(dt)
                 car.update(dt)
                 self.paintcar(car, car_image)
 

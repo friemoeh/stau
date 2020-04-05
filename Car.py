@@ -1,3 +1,5 @@
+from random import random
+
 class Car:
     def __init__(self, x, lap, startvelocity=0, randomization=0.5):
         self.position = x
@@ -19,5 +21,11 @@ class Car:
         if self.position > self.lap:
             self.position = self.position - self.lap
 
-    def accelerate(self, acc):
-        self.acceleration = acc
+    def react(self, dt):
+        v = random()
+
+        if(v>self.randomization):
+            self.acceleration = self.default_acc
+        else:
+            self.acceleration = 0
+

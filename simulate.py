@@ -4,6 +4,30 @@ import math
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
 from random import random
+from Car import Car
+
+class Car:
+    def __init__(self, x, lap, startvelocity=0, randomization=0.5):
+        self.position = x
+        self.lap = lap
+        self.default_acc=1
+        self.velocity = startvelocity
+        self.randomization=randomization
+        self.max_acceleration = 5.0
+        self.max_velocity = 20
+        self.brake_deceleration = 10
+        self.free_deceleration = 2
+     
+        
+        self.acceleration = self.default_acc
+
+    def update(self, dt):
+        self.velocity += self.acceleration * dt
+        self.velocity = max(-self.max_velocity, min(self.velocity, self.max_velocity))
+
+        self.position += self.velocity * dt
+        if self.position > self.lap:
+            self.position = self.position - self.lap
 
 def userReact(car, dt): 
     pressed = pygame.key.get_pressed()
@@ -39,31 +63,8 @@ def react(car, dt):
         car.acceleration=car.default_acc
     else:
         car.acceleration=0
-        print("tritratrödel")
-
-
-class Car:
-    def __init__(self, x, lap, startvelocity=0, randomization=0.5):
-        self.position = x
-        self.lap = lap
-        self.default_acc=1
-        self.velocity = startvelocity
-        self.randomization=randomization
-        self.max_acceleration = 5.0
-        self.max_velocity = 20
-        self.brake_deceleration = 10
-        self.free_deceleration = 2
         
-        self.acceleration = self.default_acc
-
-    def update(self, dt):
-        self.velocity += self.acceleration * dt
-        self.velocity = max(-self.max_velocity, min(self.velocity, self.max_velocity))
-
-        self.position += self.velocity * dt
-        if self.position > self.lap:
-            self.position = self.position - self.lap
-        
+   
 class Game:
     def __init__(self):
         pygame.init()
@@ -76,6 +77,7 @@ class Game:
         self.ticks = 60
         self.exit = False
         self.lap = 2 * math.pi * self.radius
+        self.numberCars = 10
 
     def cleancars(self):
         self.screen.fill((0, 0, 0))
@@ -106,9 +108,12 @@ class Game:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
-        car1 = Car (0.5 * self.lap, self.lap, 5)
-        car2 = Car (0, self.lap, 5)
-      #  car = Car (0)
+        garage=[]
+        for i in range(self.numberCars):
+            start = i * self.lap / self.numberCars
+            car = Car (start, self.lap, 5)
+            garage.append(car)
+    
        
 
         while not self.exit:
@@ -119,21 +124,15 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.exit = True
 
-            # User input
-            #userReact(car, dt)
-            react(car1, dt)
-            print(car1.velocity)
-
-            react(car2, dt)
-            print(car2.velocity)
-            # Logic
-            car1.update(dt)
-            car2.update(dt)
-
-            # Drawing
             self.cleancars()
-            self.paintcar(car1, car_image)
-            self.paintcar(car2, car_image)
+
+            for car in garage:
+                react(car, dt)
+                car.update(dt)
+                self.paintcar(car, car_image)
+
+            
+     
 
             pygame.display.flip()
         

@@ -1,32 +1,21 @@
 class Car:
-    def __init__(self, n, a, m):
-        self.name = n
-        self.age = a
-        self.speed = 0
-        self.maxspeed = m
-        self.position = 0
-        self.lastTime = 0
+    def __init__(self, x, lap, startvelocity=0, randomization=0.5):
+        self.position = x
+        self.lap = lap
+        self.default_acc=1
+        self.velocity = startvelocity
+        self.randomization=randomization
+        self.max_acceleration = 5.0
+        self.max_velocity = 20
+        self.brake_deceleration = 10
+        self.free_deceleration = 2
+        
+        self.acceleration = self.default_acc
 
-    def __str__(self):
-        return "the %s is at position %d, and drives with the speed %d" % (self.name, self.position, self.speed)
+    def update(self, dt):
+        self.velocity += self.acceleration * dt
+        self.velocity = max(-self.max_velocity, min(self.velocity, self.max_velocity))
 
-    def drive(self, s):
-        self.speed = s
-        if s > self.maxspeed:
-            self.speed = self.maxspeed
-
-        if self.speed < 0:
-            self.speed = 0
-
-    def acc(self, a):
-        self.drive(self.speed + a)
-
-    def brake(self, b):
-        new_speed = self.speed - b
-        self.drive(new_speed)
-
-    def goForward(self, t):  # t ist die ZEIT
-        self.position = self.position + (t-self.lastTime) * self.speed
-        self.lastTime = t
-
-
+        self.position += self.velocity * dt
+        if self.position > self.lap:
+            self.position = self.position - self.lap

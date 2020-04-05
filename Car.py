@@ -9,7 +9,6 @@ class Car:
         self.max_velocity = 20
         self.brake_deceleration = 10
         self.free_deceleration = 2
-        
         self.acceleration = self.default_acc
 
     def update(self, dt):
@@ -19,3 +18,6 @@ class Car:
         self.position += self.velocity * dt
         if self.position > self.lap:
             self.position = self.position - self.lap
+
+    def accelerate(self, acc):
+        self.acceleration = acc

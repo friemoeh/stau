@@ -6,63 +6,13 @@ from pygame.math import Vector2
 from random import random
 from Car import Car
 
-class Car:
-    def __init__(self, x, lap, startvelocity=0, randomization=0.5):
-        self.position = x
-        self.lap = lap
-        self.default_acc=1
-        self.velocity = startvelocity
-        self.randomization=randomization
-        self.max_acceleration = 5.0
-        self.max_velocity = 20
-        self.brake_deceleration = 10
-        self.free_deceleration = 2
-     
-        
-        self.acceleration = self.default_acc
-
-    def update(self, dt):
-        self.velocity += self.acceleration * dt
-        self.velocity = max(-self.max_velocity, min(self.velocity, self.max_velocity))
-
-        self.position += self.velocity * dt
-        if self.position > self.lap:
-            self.position = self.position - self.lap
-
-def userReact(car, dt): 
-    pressed = pygame.key.get_pressed()
-
-    if pressed[pygame.K_UP]:
-        if car.velocity < 0:
-            car.acceleration = car.brake_deceleration
-        else:
-            car.acceleration += 1 * dt
-    elif pressed[pygame.K_DOWN]:
-        if car.velocity > 0:
-            car.acceleration = -car.brake_deceleration
-        else:
-            car.acceleration -= 1 * dt
-    elif pressed[pygame.K_SPACE]:
-        if abs(car.velocity) > dt * car.brake_deceleration:
-            car.acceleration = -copysign(car.brake_deceleration, car.velocity)
-        else:
-            car.acceleration = -car.velocity / dt
-    else:
-        if abs(car.velocity) > dt * car.free_deceleration:
-            car.acceleration = -copysign(car.free_deceleration, car.velocity)
-        else:
-            if dt != 0:
-                car.acceleration = -car.velocity / dt
-                car.acceleration = max(-car.max_acceleration,
-                    min(car.acceleration, car.max_acceleration))
-
 def react(car, dt):
     v = random()
 
     if(v>car.randomization):
-        car.acceleration=car.default_acc
+        car.accelerate(car.default_acc)
     else:
-        car.acceleration=0
+        car.accelerate(0)
         
    
 class Game:

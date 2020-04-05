@@ -12,6 +12,7 @@ class Car:
         self.brake_deceleration = 10
         self.free_deceleration = 2
         self.acceleration = self.default_acc
+        self.distance
 
     def update(self, dt):
         self.velocity += self.acceleration * dt
@@ -28,4 +29,6 @@ class Car:
             self.acceleration = self.default_acc
         else:
             self.acceleration = 0
+
+        
 

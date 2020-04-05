@@ -67,6 +67,19 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.exit = True
 
+            for i in range (self.numberCars):
+                car1 = garage [i]
+                if i == self.numberCars - 1:
+                    car2 = garage [0]
+                    car1.distance =  car2.position - car1.position
+                else:
+                    car2 = garage [i + 1]
+                    car1.distance = car2.position - car1.position
+
+                if car1.distance < 0:
+                    car1.distance += self.lap
+
+
             self.cleancars()
 
             for car in garage:
@@ -75,7 +88,6 @@ class Game:
                 self.paintcar(car, car_image)
 
             
-     
 
             pygame.display.flip()
         

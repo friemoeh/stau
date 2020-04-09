@@ -14,7 +14,8 @@ class Car:
         self.free_deceleration = 2
         self.acceleration = self.default_acc
         self.distance = 0
-        self.minDist = self.lap / 10
+        self.minDist = self.lap / 30
+    
 
     def update(self, dt):
         self.velocity += self.acceleration * dt
@@ -36,7 +37,7 @@ class Car:
         #s: der zu zurück legende Weg        
         s = self.velocity * dt + acc * dt * dt /2
         # wenn man das Vorausfahrende FAhrzeug überholen würde dann wird abgebremst
-        if(s>self.distance):
-            self.acceleration = 2 * (self.distance - self.velocity * dt) / (dt * dt)
+        if(s>self.distance- self.minDist):
+            self.acceleration = 2 * (self.distance - self.minDist - self.velocity * dt) / (dt * dt)
         else:
             self.acceleration = acc 

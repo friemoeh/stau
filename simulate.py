@@ -21,7 +21,7 @@ class Game:
         self.ticks = 60
         self.exit = False
         self.lap = 2 * math.pi * self.radius
-        self.numberCars = 6
+        self.numberCars = 10
 
     def cleancars(self):
         self.screen.fill((0, 0, 0))
@@ -41,7 +41,7 @@ class Game:
         alpha_deg = alpha * 360 / (2 * math.pi)
 
        
-        rotated = pygame.transform.rotate(car_image, alpha_deg)
+        rotated = pygame.transform.rotozoom(car_image, alpha_deg, 0.3)
         rect = rotated.get_rect()
 
         screenPosition = Vector2(x,y)

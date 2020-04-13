@@ -4,7 +4,7 @@ class Car:
     def __init__(self, x, lap, startvelocity=0, randomization=0.5):
         self.position = x
         self.lap = lap
-        self.default_acc=1
+        self.default_acc=3
         self.velocity = startvelocity
         self.probAcc = 0.4
         self.probDeacc = 0.3

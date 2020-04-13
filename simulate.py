@@ -3,11 +3,9 @@ import pygame
 import math
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
-
+from Display import Display
 from Car import Car
 
-
-        
    
 class Game:
     def __init__(self):
@@ -21,7 +19,8 @@ class Game:
         self.ticks = 60
         self.exit = False
         self.lap = 2 * math.pi * self.radius
-        self.numberCars = 10
+        self.numberCars = 15
+        self.display = Display()
 
     def cleancars(self):
         self.screen.fill((0, 0, 0))
@@ -58,10 +57,10 @@ class Game:
             car = Car (start, self.lap, 5)
             garage.append(car)
     
-
-        while not self.exit:
+        time = 0
+        while not self.exit and time < 120:
             dt = self.clock.get_time() / 1000
-
+            time += dt
             # Event queue
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -81,17 +80,29 @@ class Game:
 
 
             self.cleancars()
+            sumvelocity = 0
+            trafficDens = 0
 
             for car in garage:
                 car.react(dt)
                 car.update(dt)
                 self.paintcar(car, car_image)
+                if (car.position < self.lap / 8):
+                    sumvelocity += car.velocity
+                    trafficDens += 1
 
-            
+            averageSpeed = (sumvelocity / trafficDens) if trafficDens>0 else None
+            trafficIntensity = trafficDens * averageSpeed if trafficDens>0 else None
+            metric = [time, trafficDens, averageSpeed, trafficIntensity]
+            self.display.addmetric(metric)
+
 
             pygame.display.flip()
-        
             self.clock.tick(self.ticks)
+
+        #self.display.showtimeplot()
+        self.display.showplot()
+
         pygame.quit()
 
 

@@ -5,6 +5,8 @@ import numpy as np
 class Display:
     def __init__ (self):
         self.metrics = []
+        self.npMetrics =  np.array([])
+        self.package=50
 
     def addmetric (self,metric):
         self.metrics.append (metric)
@@ -19,8 +21,33 @@ class Display:
         plt.legend()
         plt.show()
 
+    def subsample(self):
+        tempMetrics = np.array(self.metrics)
+        numRows = tempMetrics.shape[0]
+        print("Num Rows: ", numRows)
+        tempMetrics2 = []
+
+        for i in range(0,numRows, self.package):
+            bla = np.mean(tempMetrics[i:i+self.package, :],0)
+            tempMetrics2.append(bla)
+        self.npMetrics = np.array(tempMetrics2)
+
     def showplot (self):
-        npMetrics = np.array(self.metrics)
-        plt.plot(npMetrics[:,1],npMetrics[:,2], ',')
+        plt.figure()
+        plt.subplot(221)
+        plt.xlabel('speed')
+        plt.ylabel('intensity')
+        plt.plot(self.npMetrics[:,2],self.npMetrics[:,3], ',')
+
+        plt.subplot(222)
+        plt.xlabel('density')
+        plt.ylabel('intensity')
+        plt.plot(self.npMetrics[:,1],self.npMetrics[:,3], ',')
+
+        plt.subplot(224)
+        plt.xlabel('density')
+        plt.ylabel('speed')
+        plt.plot(self.npMetrics[:,1],self.npMetrics[:,2], ',')
+
 
         plt.show()

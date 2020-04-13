@@ -1,20 +1,16 @@
 from random import random
 
 class Car:
-    def __init__(self, x, lap, startvelocity=0, randomization=0.5):
+    def __init__(self, x, lap, startvelocity):
         self.position = x
         self.lap = lap
         self.default_acc=3
         self.velocity = startvelocity
-        self.probAcc = 0.4
         self.probDeacc = 0.3
-        self.max_acceleration = 5.0
         self.max_velocity = 20
-        self.brake_deceleration = 10
-        self.free_deceleration = 2
-        self.acceleration = self.default_acc
+        self.acceleration = 0
         self.distance = 0
-        self.minDist = self.lap / 30
+        self.minDist = self.lap / 200
     
 
     def update(self, dt):
@@ -26,10 +22,10 @@ class Car:
             self.position = self.position - self.lap
 
     def react(self, dt):
-        #beschleunige
+        # default: beschleunige
         acc = self.default_acc
 
-        #trödeln in probDeacc Fällen
+        # trödeln in probDeacc Fällen
         reactProb = random()
         if(reactProb < self.probDeacc):
             acc = - self.default_acc

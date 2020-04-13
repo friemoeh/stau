@@ -5,6 +5,7 @@ from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
 from Display import Display
 from Car import Car
+from random import random
 
    
 class Game:
@@ -13,13 +14,13 @@ class Game:
         pygame.display.set_caption("Car tutorial")
         width = 720
         height = 720
-        self.radius = 8
+        self.radius = 10
         self.screen = pygame.display.set_mode((width, height))
         self.clock = pygame.time.Clock()
         self.ticks = 60
         self.exit = False
         self.lap = 2 * math.pi * self.radius
-        self.numberCars = 15
+        self.numberCars = 60
         self.display = Display()
 
     def cleancars(self):
@@ -40,22 +41,25 @@ class Game:
         alpha_deg = alpha * 360 / (2 * math.pi)
 
        
-        rotated = pygame.transform.rotozoom(car_image, alpha_deg, 0.3)
+        rotated = pygame.transform.rotozoom(car_image, alpha_deg, 0.05)
         rect = rotated.get_rect()
 
         screenPosition = Vector2(x,y)
         self.screen.blit(rotated, screenPosition * ppu - (rect.width / 2, rect.height / 2))
     
+    def createGarage(self, numCars, length):
+        garage=[]
+        for i in range(numCars):
+            start = i * length / numCars
+            car = Car (start ,length, 5)
+            garage.append(car)
+        return garage
 
     def run(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
-        garage=[]
-        for i in range(self.numberCars):
-            start = i * self.lap / self.numberCars
-            car = Car (start, self.lap, 5)
-            garage.append(car)
+        garage = self.createGarage(self.numberCars, self.lap)
     
         time = 0
         while not self.exit and time < 120:
@@ -87,20 +91,22 @@ class Game:
                 car.react(dt)
                 car.update(dt)
                 self.paintcar(car, car_image)
-                if (car.position < self.lap / 8):
+                if (car.position < self.lap / 8 and time > 7):
                     sumvelocity += car.velocity
                     trafficDens += 1
 
-            averageSpeed = (sumvelocity / trafficDens) if trafficDens>0 else None
-            trafficIntensity = trafficDens * averageSpeed if trafficDens>0 else None
-            metric = [time, trafficDens, averageSpeed, trafficIntensity]
-            self.display.addmetric(metric)
+            if trafficDens>0:
+                averageSpeed = (sumvelocity / trafficDens)
+                trafficIntensity = trafficDens * averageSpeed
+                metric = [time, trafficDens, averageSpeed, trafficIntensity]
+                self.display.addmetric(metric)
 
 
             pygame.display.flip()
             self.clock.tick(self.ticks)
 
         #self.display.showtimeplot()
+        self.display.subsample()
         self.display.showplot()
 
         pygame.quit()

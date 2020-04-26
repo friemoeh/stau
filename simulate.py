@@ -22,6 +22,7 @@ class Game:
         self.lap = 2 * math.pi * self.radius
         self.numberCars = 60
         self.display = Display()
+        self.showAnimation = False
 
     def cleancars(self):
         self.screen.fill((0, 0, 0))
@@ -64,9 +65,14 @@ class Game:
         garage = self.createGarage(self.numberCars, self.lap)
     
         time = 0
-        while not self.exit and time < 3600 :
-            dt = self.clock.get_time() / 1000
-            time += dt
+        i=0
+        while not self.exit and time < 3000 :
+            dt = self.clock.get_time() / 1000 if self.showAnimation else 0.01
+            time += dt 
+            i+=1
+            if (i%100 == 0):
+                print (time)
+            #print(dt)
             # Event queue
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -92,7 +98,8 @@ class Game:
             for car in garage:
                 car.react(dt)
                 car.update(dt)
-                self.paintcar(car, car_image)
+                if self.showAnimation:
+                    self.paintcar(car, car_image)
                 if (car.position < self.lap / 8 and time > 7):
                     sumvelocity += car.velocity
                     trafficDens += 1
@@ -104,8 +111,10 @@ class Game:
                 self.display.addmetric(metric)
 
 
-            pygame.display.flip()
-            self.clock.tick(self.ticks)
+            if self.showAnimation:
+                pygame.display.flip()  
+                self.clock.tick(self.ticks)
+
 
         #self.display.showtimeplot()
         self.display.subsample()

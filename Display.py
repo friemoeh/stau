@@ -38,16 +38,28 @@ class Display:
         plt.xlabel('speed')
         plt.ylabel('intensity')
         plt.plot(self.npMetrics[:,2],self.npMetrics[:,3], ',')
+        z = np.polyfit(self.npMetrics[:,2],self.npMetrics[:,3],2)
+        f = np.poly1d(z)
+        x=np.linspace(min(self.npMetrics[:,2]),max(self.npMetrics[:,2]), 100)
+        plt.plot(x,f(x), 'b')
 
         plt.subplot(222)
         plt.xlabel('density')
         plt.ylabel('intensity')
         plt.plot(self.npMetrics[:,1],self.npMetrics[:,3], ',')
+        z = np.polyfit(self.npMetrics[:,1],self.npMetrics[:,3],2)
+        f = np.poly1d(z)
+        x=np.linspace(min(self.npMetrics[:,1]),max(self.npMetrics[:,1]), 100)
+        plt.plot(x,f(x), 'b')
 
         plt.subplot(224)
         plt.xlabel('density')
         plt.ylabel('speed')
         plt.plot(self.npMetrics[:,1],self.npMetrics[:,2], ',')
+        z = np.polyfit(self.npMetrics[:,1],self.npMetrics[:,2],2)
+        f = np.poly1d(z)
+        x=np.linspace(min(self.npMetrics[:,1]),max(self.npMetrics[:,1]), 100)
+        plt.plot(x,f(x), 'b')
 
 
         plt.show()

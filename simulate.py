@@ -40,8 +40,8 @@ class Game:
 
         alpha_deg = alpha * 360 / (2 * math.pi)
 
-       
-        rotated = pygame.transform.rotozoom(car_image, alpha_deg, 0.05)
+        scale = 3 / self.numberCars
+        rotated = pygame.transform.rotozoom(car_image, alpha_deg, scale)
         rect = rotated.get_rect()
 
         screenPosition = Vector2(x,y)
@@ -51,7 +51,9 @@ class Game:
         garage=[]
         for i in range(numCars):
             start = i * length / numCars
-            car = Car (start ,length, 5)
+            minDist = length/ (numCars * 3)
+            maxvelocity = 1200 / self.numberCars
+            car = Car (start ,length, maxvelocity, minDist)
             garage.append(car)
         return garage
 
@@ -62,7 +64,7 @@ class Game:
         garage = self.createGarage(self.numberCars, self.lap)
     
         time = 0
-        while not self.exit and time < 120:
+        while not self.exit and time < 3600 :
             dt = self.clock.get_time() / 1000
             time += dt
             # Event queue

@@ -1,22 +1,22 @@
 from random import random
 
 class Car:
-    def __init__(self, x, lap, startvelocity):
+    def __init__(self, x, lap, maxvelocity, minimalDist):
         self.position = x
         self.lap = lap
         self.default_acc=3
-        self.velocity = startvelocity
+        self.velocity = 5
         self.probDeacc = 0.3
-        self.max_velocity = 20
+        self.max_velocity = maxvelocity
         self.acceleration = 0
         self.distance = 0
-        self.minDist = self.lap / 200
+        self.minDist = minimalDist
     
 
     def update(self, dt):
         self.velocity += self.acceleration * dt
         self.velocity = max(0, min(self.velocity, self.max_velocity))
-
+ 
         self.position += self.velocity * dt
         if self.position > self.lap:
             self.position = self.position - self.lap
